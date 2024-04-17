@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -11,6 +14,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,35 +39,48 @@ class MainActivity : ComponentActivity() {
         setContent {
             SportsEventsRecruitmentTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
                 var selectedEventVideoUrl by rememberSaveable { mutableStateOf("") }
+
+                LaunchedEffect(key1 = currentDestination) {
+                    currentDestination?.let {
+                        if (currentDestination.route != Screen.Playback.route)
+                            selectedEventVideoUrl = ""
+                        else if (selectedEventVideoUrl == "")
+                            navController.navigateUp()
+                    }
+                }
 
                 Scaffold(
                     bottomBar = {
                         val items = listOf(Screen.Events, Screen.Schedule)
-                        NavigationBar {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentDestination = navBackStackEntry?.destination
-                            if (currentDestination?.route != Screen.Playback.route)
-                                selectedEventVideoUrl = ""
-                            items.forEach { screen ->
-                                NavigationBarItem(
-                                    icon = {
-                                        screen.icon?.let { Icon(it, contentDescription = null) }
-                                    },
-                                    label = { Text(stringResource(screen.titleId)) },
-                                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                    onClick = {
-                                        if (currentDestination?.route == Screen.Playback.route)
-                                            navController.navigateUp()
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
+                        AnimatedVisibility(
+                            visible = currentDestination?.route != Screen.Playback.route,
+                            enter = slideInVertically(initialOffsetY = { it }),
+                            exit = slideOutVertically(targetOffsetY = { it })
+                        ) {
+                            NavigationBar {
+                                items.forEach { screen ->
+                                    NavigationBarItem(
+                                        icon = {
+                                            screen.icon?.let { Icon(it, contentDescription = null) }
+                                        },
+                                        label = { Text(stringResource(screen.titleId)) },
+                                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                        onClick = {
+                                            if (currentDestination?.route == Screen.Playback.route)
+                                                navController.navigateUp()
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
                                         }
-                                    }
-                                )
+                                    )
+                                }
                             }
                         }
                     },
@@ -75,10 +92,12 @@ class MainActivity : ComponentActivity() {
                         Modifier.padding(innerPadding)
                     ) {
                         composable(Screen.Events.route) {
-                            EventsScreen { url ->
-                                selectedEventVideoUrl = url
-                                navController.navigate(Screen.Playback.route)
-                            }
+                            EventsScreen(
+                                onItemClick = { url ->
+                                    selectedEventVideoUrl = url
+                                    navController.navigate(Screen.Playback.route)
+                                }
+                            )
                         }
                         composable(Screen.Schedule.route) { ScheduleScreen() }
                         composable(Screen.Playback.route) {

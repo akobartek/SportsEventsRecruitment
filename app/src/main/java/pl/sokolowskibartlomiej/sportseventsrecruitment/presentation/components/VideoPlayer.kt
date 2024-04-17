@@ -7,7 +7,11 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -22,6 +26,7 @@ import androidx.media3.ui.PlayerView
 @Composable
 fun VideoPlayer(videoUrl: String) {
     val context = LocalContext.current
+    var savedPosition by rememberSaveable { mutableLongStateOf(0L) }
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
@@ -30,6 +35,7 @@ fun VideoPlayer(videoUrl: String) {
             playWhenReady = true
         }
     }
+    if (savedPosition > 0L) exoPlayer.seekTo(savedPosition)
 
     DisposableEffect(
         AndroidView(
@@ -47,6 +53,7 @@ fun VideoPlayer(videoUrl: String) {
         )
     ) {
         onDispose {
+            savedPosition = exoPlayer.currentPosition
             exoPlayer.release()
         }
     }
