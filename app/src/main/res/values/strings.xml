@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">Events</string>
     <string name="events">Events</string>
     <string name="schedule">Schedule</string>
+    <string name="playback">Playback</string>
 
     <string name="no_internet_dialog_title">No internet connection</string>
     <string name="no_internet_dialog_message">An error with connection occurred, do you want to try again?</string>

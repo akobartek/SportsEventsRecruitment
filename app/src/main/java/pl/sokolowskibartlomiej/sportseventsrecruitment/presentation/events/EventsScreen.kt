@@ -7,7 +7,10 @@ import org.koin.androidx.compose.koinViewModel
 import pl.sokolowskibartlomiej.sportseventsrecruitment.presentation.components.EventsScreenLayout
 
 @Composable
-fun EventsScreen(viewModel: EventsViewModel = koinViewModel()) {
+fun EventsScreen(
+    viewModel: EventsViewModel = koinViewModel(),
+    onItemClick: (String) -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     EventsScreenLayout(
@@ -15,8 +18,6 @@ fun EventsScreen(viewModel: EventsViewModel = koinViewModel()) {
         isLoading = uiState.isLoading,
         isLoadingFailed = uiState.isLoadingFailed,
         toggleLoadingErrorDialog = viewModel::toggleLoadingErrorDialog,
-        onItemClick = {
-            // TODO
-        }
+        onItemClick = onItemClick
     )
 }
