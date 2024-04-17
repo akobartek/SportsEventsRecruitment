@@ -5,10 +5,9 @@ import android.text.format.DateUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.abs
 
 fun Date.getFormattedString(context: Context): String =
-    if (abs(time - Date().time) < DateUtils.DAY_IN_MILLIS * 2)
+    if (time - Date().time > DateUtils.DAY_IN_MILLIS * -2)
         DateUtils.getRelativeDateTimeString(
             context,
             time,
