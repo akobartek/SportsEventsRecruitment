@@ -4,7 +4,7 @@ import pl.sokolowskibartlomiej.sportseventsrecruitment.domain.model.Event
 
 data class ScreenUiState(
     val events: List<Event> = listOf(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val isLoadingFailed: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {

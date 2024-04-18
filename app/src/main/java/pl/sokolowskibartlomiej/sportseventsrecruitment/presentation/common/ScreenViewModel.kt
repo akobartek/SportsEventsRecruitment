@@ -13,7 +13,7 @@ abstract class ScreenViewModel: ViewModel() {
 
     abstract fun loadData()
 
-    fun setEvents(events: List<Event>) {
+    protected fun setEvents(events: List<Event>) {
         _uiState.getAndUpdate { currentState ->
             currentState.copy(
                 isLoading = false,
@@ -24,7 +24,7 @@ abstract class ScreenViewModel: ViewModel() {
 
     fun toggleLoading() {
         _uiState.getAndUpdate { currentState ->
-            currentState.copy(isLoading = !currentState.isLoading)
+            currentState.copy(isLoading = true)
         }
     }
 

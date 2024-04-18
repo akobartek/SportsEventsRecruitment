@@ -17,18 +17,16 @@ class ScheduleViewModel(private val loadScheduleUseCase: LoadScheduleUseCase) : 
 
     override fun loadData() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                toggleLoading()
-                job = launch {
-                    while (true) {
-                        val schedule = loadScheduleUseCase().getOrThrow()
-                        setEvents(schedule)
-                        delay(30_000)
-                    }
+            toggleLoading()
+            job = launch {
+                while (true) {
+                    val schedule = loadScheduleUseCase()
+                    if (schedule.isSuccess) setEvents(schedule.getOrElse { listOf() })
+                    else toggleLoadingErrorDialog()
+                    delay(30_000)
                 }
-            } catch (exc: Throwable) {
-                toggleLoadingErrorDialog()
             }
+            job?.join()
         }
     }
 
