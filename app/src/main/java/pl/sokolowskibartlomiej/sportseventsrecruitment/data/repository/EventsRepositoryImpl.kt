@@ -9,10 +9,10 @@ class EventsRepositoryImpl(
 ) : EventsRepository {
     override suspend fun loadEvents(): Result<List<Event>> =
         try {
-            val schedule = api.getEvents()
+            val events = api.getEvents()
                 .map { it.toDomainObject() }
                 .sortedBy { it.date }
-            Result.success(schedule)
+            Result.success(events)
         } catch (exc: Exception) {
             Result.failure(exc)
         }

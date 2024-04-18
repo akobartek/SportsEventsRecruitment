@@ -75,6 +75,12 @@ dependencies {
     implementation(libs.media3.ui)
 
     testImplementation(libs.junit)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.okttp.mockwebserver)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockito.kotlin)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
