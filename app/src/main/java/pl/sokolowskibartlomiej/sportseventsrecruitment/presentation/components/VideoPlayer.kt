@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.OptIn
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -24,7 +25,10 @@ import androidx.media3.ui.PlayerView
 @SuppressLint("OpaqueUnitKey")
 @OptIn(UnstableApi::class)
 @Composable
-fun VideoPlayer(videoUrl: String) {
+fun VideoPlayer(
+    videoUrl: String,
+    modifier: Modifier
+) {
     val context = LocalContext.current
     var savedPosition by rememberSaveable { mutableLongStateOf(0L) }
     val exoPlayer = remember {
@@ -39,7 +43,9 @@ fun VideoPlayer(videoUrl: String) {
 
     DisposableEffect(
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxWidth()
+                .aspectRatio(16 / 9f),
             factory = {
                 PlayerView(context).apply {
                     player = exoPlayer
@@ -48,6 +54,10 @@ fun VideoPlayer(videoUrl: String) {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
+                    setShowNextButton(false)
+                    setShowPreviousButton(false)
+                    setShowFastForwardButton(false)
+                    setShowRewindButton(false)
                 }
             }
         )
