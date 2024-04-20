@@ -1,8 +1,6 @@
 package pl.sokolowskibartlomiej.sportseventsrecruitment.presentation.components
 
 import android.annotation.SuppressLint
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,15 +43,10 @@ fun VideoPlayer(
         AndroidView(
             modifier = modifier
                 .fillMaxWidth()
-                .aspectRatio(16 / 9f),
+                .aspectRatio(16 / 9f, true),
             factory = {
                 PlayerView(context).apply {
                     player = exoPlayer
-                    useController = true
-                    FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
                     setShowNextButton(false)
                     setShowPreviousButton(false)
                     setShowFastForwardButton(false)
